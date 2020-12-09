@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+    <!--打印sql语句-->
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="cacheEnabled" value="false" />
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+    <!--你需要用到的实体类的快捷路径-->
+    <typeAliases><!-- 在mybatis-config.xml配置中使用别名，方便省去输入全路径 -->
+        <typeAlias type="com.chuankeji.bean.User" alias="User"/>
+        <typeAlias type="com.chuankeji.bean.PageBen" alias="PageBen"/>
+        <typeAlias type="com.chuankeji.bean.Role" alias="Role"/>
+    </typeAliases>
+
+    <!-- 环境配置 -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <!-- 数据库连接相关配置 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver" />
+                <property name="url" value="jdbc:mysql://localhost:3306/networkdisk?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true" />
+                <property name="username" value="root" />
+                <property name="password" value="miaoshuashua" />
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- mapping文件路径配置（创建问UserMapper后才需要引入） -->
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/RoleMapper.xml"/>
+    </mappers>
+</configuration>

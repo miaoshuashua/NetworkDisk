@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!--<typeAliases>&lt;!&ndash; 在mybatis-config.xml配置中使用别名，方便省去输入全路径 &ndash;&gt;-->
+<!--    <typeAlias type="com.cykj.bean.UserInfo" alias="UserInfo"/>-->
+<!--</typeAliases>-->
+
+<mapper namespace="com.chuankeji.mapper.RoleMapper">
+        <!--一对多-->
+        <select id="findAllRole" resultType="Role" resultMap="userList">
+                select * from rolename
+        </select>
+
+        <select id="selectUserIfo" parameterType="java.lang.Integer" resultType="User">
+                select * from user where roleId = #{id}
+        </select>
+
+        <!--映射-->
+        <resultMap type="Role" id="userList">
+                <!---->
+                <id column="id" property="id"></id>
+                <result column="roleName2" property="roleName2"></result>
+                <collection column="id" property="userList" ofType="User" select="selectUserIfo">
+                        <id column="id" property="id"></id>
+                </collection>
+        </resultMap>
+
+
+
+        <!--多对一-->
+        <select id="findAllUser" resultType="User" resultMap="classMap">
+            select * from user
+        </select>
+
+        <select id="selectRoleByUser" parameterType="java.lang.Integer" resultType="Role">
+            select * from rolename where id = #{roleId}
+        </select>
+
+        <!--映射-->
+        <resultMap type="User" id="classMap">
+                <id column="id" property="id"></id>
+                <association property="role" column="id" javaType="Role" select="selectRoleByUser">
+                        <id column="id" property="id"></id>
+                        <result column="roleName2" property="roleName2"></result>
+                </association>
+        </resultMap>
+
+
+
+
+
+
+        <select id="findUserByJoinRole" resultMap="OneToMany">
+            select t1.*,t2.id id2,t2.roleName2  roleName2 from rolename t2 left join user t1  on t1.roleId = t2.id
+        </select>
+
+        <!--映射-->
+        <resultMap id="OneToMany" type="Role">
+                <id column="id2" property="id"></id>
+                <result column="roleName2" property="roleName2"></result>
+                <collection  property="userList" ofType="User" >
+                        <id column="id" property="id"></id>
+                        <result column="username" property="username"></result>
+                </collection>
+        </resultMap>
+
+
+</mapper>

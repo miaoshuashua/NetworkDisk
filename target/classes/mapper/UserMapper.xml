@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!--<typeAliases>&lt;!&ndash; 在mybatis-config.xml配置中使用别名，方便省去输入全路径 &ndash;&gt;-->
+<!--    <typeAlias type="com.cykj.bean.UserInfo" alias="UserInfo"/>-->
+<!--</typeAliases>-->
+
+<mapper namespace="com.chuankeji.mapper.UserMapper">
+    <insert id="addUser" parameterType="User">
+        insert into user (username, password, email, phone, sex, truename, eduction2) values (#{username},#{password},#{email},#{phone},#{sex},#{truename},#{eduction2})
+    </insert>
+
+    <delete id="deleteUserByid" parameterType="User">
+        delete from user where id=#{id}
+    </delete>
+    <update id="updateUser" parameterType="User">
+        update user
+        <trim prefix="set" prefixOverrides="," suffix="">
+            <if test="username != null">
+                username = #{username}
+            </if>
+            <if test="password  != null">
+                ,password = #{password}
+            </if>
+            <if test="email != null">
+                ,email = #{email}
+            </if>
+            <if test="phone != null">
+                ,phone = #{phone}
+            </if>
+            <if test="sex != null">
+                ,sex = #{sex}
+            </if>
+            <if test="truename != null">
+                ,truename = #{truename}
+            </if>
+        </trim>
+        <where>
+            <if test="id != null">
+                id=#{id}
+            </if>
+        </where>
+    </update>
+    <!--分页查询-->
+    <select id="findAll" resultType="User">
+       select * from user where 1=1
+                        <if test="hasMap.userName != null" >
+                            and  username like concat('%',#{hasMap.userName},'%')
+                        </if>
+                        <if test="hasMap.registerTime1 != null" >
+                            and <![CDATA[registrationTime >= #{hasMap.registerTime1} ]]>
+                        </if>
+                        <if test="hasMap.registerTime2 != null" >
+                            and  <![CDATA[registrationTime <= #{hasMap.registerTime2}]]>
+                        </if>
+        order by id limit #{pageBen.initialCount},#{pageBen.pageSize};
+    </select>
+    <!--查询总记录数-->
+    <select id="findAllCount" resultType="java.lang.Integer">
+        select count(*) from user where 1=1
+            <if test="hasMap.userName != null" >
+                and  username like concat('%',#{hasMap.userName},'%')
+            </if>
+            <if test="hasMap.registerTime1 != null" >
+                and <![CDATA[registrationTime >= #{hasMap.registerTime1} ]]>
+            </if>
+            <if test="hasMap.registerTime2 != null" >
+                and  <![CDATA[registrationTime <= #{hasMap.registerTime2}]]>
+            </if>
+    </select>
+    <!--修改用户状态-->
+    <update id="userStatusUpdate" >
+        update user
+        <trim prefix="set" prefixOverrides="," suffix="">
+            <if test="userStatus != null">
+                userStatus = #{userStatus}
+            </if>
+        </trim>
+        <where>
+            <if test="userId != null">
+                id=#{userId}
+            </if>
+        </where>
+    </update>
+    <!--登入-->
+    <!--分页查询2-->
+    <select id="findMap" resultType="User">
+        select * from user
+    </select>
+    <!--登入-->
+    <select id="login" resultType="User">
+        select * from user where username =#{0} and password=#{1}
+    </select>
+    <!--模拟编写-->
+    <select id="findIn" resultType="User">
+        select  * from user where id in
+        <foreach collection="list" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </select>
+<!--    &lt;!&ndash;oracle数据库需要先查询oacle的序列&ndash;&gt;-->
+<!--    <insert id="addUser" parameterType="User">-->
+<!--        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">-->
+<!--            select  user_seq.nextval from dual-->
+<!--        </selectKey>-->
+<!--    </insert>-->
+
+
+
+</mapper>
